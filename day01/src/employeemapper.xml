@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="employee.Employeemapper">
+<resultMap id="myemp" type="pojo.Employee">
+    <id column="id" property="id"/>
+    <result column="last_name" property="lastName"/>
+</resultMap>
+    <resultMap id="myemp2" type="pojo.Employee">
+    <id column="id" property="id"/>
+    <result column="last_name" property="lastName"/>
+     <result column="gender" property="gender"/>
+        <result column="email" property="email"/>
+        <result column="did" property="depatement.id"/>
+        <result column="d_id" property="depatement.id"/>
+        <result column="dept_name" property="depatement.name"/>
+      <!--一下也是级联赋值-->
+       <!--<association property="deptment" javaType="pojo.Depatement">
+       <id column="did" property="id" />
+           <result column="dept_name" property="name"/>
+    </association>-->
+    </resultMap>
+
+    <resultMap id="getmapid" type="pojo.Employee">
+        <id column="id" property="id"/>
+        <result column="last_name" property="lastName"/>
+        <result column="email" property="email"/>
+        <result column="gender" property="gender"/>
+        <association property="depatement" select="employee.Departmentmapper.getbyid"
+                     column="d_id"></association>
+    </resultMap>
+    <select id="getempbyid" resultMap="getmapid">
+        select * from tbl_employee where id = #{id}
+    </select>
+
+
+    <select id="geteandd" resultMap="myemp2">
+ select e.id id,e.last_name last_name,e.gender gender,e.email email, e.d_id d_id,d.id did,d.dept_name dept_name
+ FROM tbl_dept d,tbl_employee e WHERE e.d_id=d.id AND e.id=#{id}
+
+    </select>
+    <select id="getbyid" resultMap="myemp">
+      select * from tbl_employee where id = #{id}
+    </select>
+    <select id="selectreturnmap1" resultType="employee">
+       select * from tbl_employee where last_name like #{lastName}
+    </select>
+    <select id="selectreturnmap" resultType="map">
+     select * from tbl_employee where id = #{id}
+    </select>
+    <select id="selectlist" resultType="employee">
+       select * from tbl_employee where last_name like #{lastName}
+    </select>
+    <select id="selectmap" resultType="employee">
+        select * from tbl_employee where id = #{id} and last_name=#{lastName}
+    </select>
+    <select id="selectemployee2" resultType="employee">
+        select * from tbl_employee where id = #{id} and last_name=#{lastName}
+
+    </select>
+    <select id="selectemployee" resultType="employee" >
+        select * from tbl_employee where id = #{id}
+    </select>
+    <insert id="addemployee" parameterType="employee" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO tbl_employee(last_name,gender,email)VALUES (#{lastName},#{gender},#{email})
+    </insert>
+    <update id="updateemployee" >
+        UPDATE tbl_employee SET last_name=#{lastName},email=#{email},gender=#{gender} WHERE id= #{id}
+    </update>
+    <delete id="deleteemployee">
+        DELETE FROM  tbl_employee WHERE  id= #{id}
+    </delete>
+</mapper>
